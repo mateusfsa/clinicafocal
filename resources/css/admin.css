@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+   
+@layer utilities {
+    .section-title::after {
+        content: '';
+        position: absolute;
+        width: 70%;
+        height: 4px;
+        background: theme('colors.accent');
+        bottom: -10px;
+        left: 0;
+        border-radius: 2px;
+    }
+
+    .testimonial-text::before,
+    .testimonial-text::after {
+        content: '"';
+        font-size: 3rem;
+        color: rgba(255, 255, 255, 0.3);
+        position: absolute;
+    }
+
+    .testimonial-text::before {
+        top: -20px;
+        left: -15px;
+    }
+
+    .testimonial-text::after {
+        content: '"';
+        bottom: -40px;
+        right: -15px;
+    }
+
+    .footer-col h3::after {
+        content: '';
+        position: absolute;
+        width: 50px;
+        height: 3px;
+        background: theme('colors.accent');
+        bottom: 0;
+        left: 0;
+    }
+
+    .nav-link::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        background: theme('colors.primary');
+        bottom: 0;
+        left: 0;
+        transition: all 0.3s ease;
+    }
+
+    .nav-link:hover::after {
+        width: 100%;
+    }
+
+    .transition-all {
+        transition: all 0.3s ease;
+    }
+}
