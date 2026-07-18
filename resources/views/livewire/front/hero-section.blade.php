@@ -1,3 +1,5 @@
+{{-- Livewire 3 exige uma tag raiz sempre presente, mesmo sem Hero cadastrado --}}
+<div>
  @if ($hero)
      <section id="inicio"
          class="min-h-screen flex items-center text-white pt-16 bg-gradient-to-br from-primary/90 to-secondary/90 bg-[url('https://images.unsplash.com/photo-1504813184591-01572f98c85f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80')] bg-cover bg-center bg-no-repeat"
@@ -16,3 +18,4 @@
          </div>
      </section>
  @endif
+</div>

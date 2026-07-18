@@ -20,6 +20,9 @@ class GraduacoeResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-eye';
 
+    protected static ?string $label = 'Graduação';
+    protected static ?string $pluralLabel = 'Graduações';
+
     public static function form(Form $form): Form
     {
         return $form

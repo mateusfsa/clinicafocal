@@ -15,6 +15,9 @@
     <!-- Testimonials Section -->
     <livewire:front.testimonial-section />
 
+    <!-- Agendamento Online -->
+    <livewire:front.agendamento-section />
+
     <!-- Contact Section -->
     <livewire:front.contact-section />
 </x-front-layout>

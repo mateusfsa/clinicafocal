@@ -3,24 +3,31 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Concerns\Auditavel;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use Auditavel, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
+     *
+     * Nota: 'tipo' é gerenciado apenas pelo UserResource (admin-only);
+     * o registro público está desativado e o perfil só valida name/email.
      */
     protected $fillable = [
         'name',
         'email',
         'password',
+        'tipo',
     ];
 
     /**
@@ -48,12 +55,47 @@ class User extends Authenticatable
     const TIPO_ATENDENTE = 'atendente';
     const TIPO_MEDICO = 'medico';
     const TIPO_ADMIN = 'admin';
+    const TIPO_PACIENTE = 'paciente';
+
     /**
-     * Verifica se o usuário pode acessar o painel Filament
+     * Tipos autorizados a acessar o painel Filament.
+     * Usuários sem tipo definido (ou pacientes) NÃO têm acesso.
      */
-    public function canAccessFilament(): bool
+    public function canAccessPanel(Panel $panel): bool
     {
-        return true;
+        return in_array($this->tipo, [
+            self::TIPO_ADMIN,
+            self::TIPO_MEDICO,
+            self::TIPO_ATENDENTE,
+        ], true);
+    }
+
+    /**
+     * É usuário da equipe (acessa o painel administrativo)
+     */
+    public function isStaff(): bool
+    {
+        return in_array($this->tipo, [
+            self::TIPO_ADMIN,
+            self::TIPO_MEDICO,
+            self::TIPO_ATENDENTE,
+        ], true);
+    }
+
+    /**
+     * Verifica se o usuário é paciente (portal)
+     */
+    public function isPaciente(): bool
+    {
+        return $this->tipo === self::TIPO_PACIENTE;
+    }
+
+    /**
+     * Cadastro de paciente vinculado a este login
+     */
+    public function paciente()
+    {
+        return $this->hasOne(Paciente::class);
     }
 
     /**

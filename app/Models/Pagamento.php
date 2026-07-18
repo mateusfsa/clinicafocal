@@ -2,19 +2,31 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Auditavel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Pagamento extends Model
 {
-    use HasFactory;
+    use Auditavel, HasFactory;
 
     protected $fillable = [
         'agendamento_id',
+        'caixa_id',
         'valor',
         'forma_pagamento',
     ];
+
+    protected static function booted(): void
+    {
+        // Vincula automaticamente o pagamento ao caixa aberto
+        static::creating(function (Pagamento $pagamento) {
+            if (! $pagamento->caixa_id) {
+                $pagamento->caixa_id = Caixa::atual()?->id;
+            }
+        });
+    }
 
     const FORMA_DINHEIRO = 'dinheiro';
     const FORMA_CARTAO_DEBITO = 'cartao_debito';
@@ -27,6 +39,14 @@ class Pagamento extends Model
     public function agendamento(): BelongsTo
     {
         return $this->belongsTo(Agendamento::class);
+    }
+
+    /**
+     * Caixa em que o pagamento foi registrado
+     */
+    public function caixa(): BelongsTo
+    {
+        return $this->belongsTo(Caixa::class);
     }
 
     /**

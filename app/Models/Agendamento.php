@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Auditavel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -9,10 +10,12 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Agendamento extends Model
 {
-    use HasFactory;
+    use Auditavel, HasFactory;
 
     protected $fillable = [
         'paciente_id',
+        'medico_id',
+        'convenio_id',
         'data_hora',
         'status',
     ];
@@ -25,6 +28,7 @@ class Agendamento extends Model
     const STATUS_COMPARECEU = 'compareceu';
     const STATUS_EM_ATENDIMENTO = 'em_atendimento';
     const STATUS_FINALIZADO = 'finalizado';
+    const STATUS_CANCELADO = 'cancelado';
 
     /**
      * Relacionamento com paciente
@@ -32,6 +36,22 @@ class Agendamento extends Model
     public function paciente(): BelongsTo
     {
         return $this->belongsTo(Paciente::class);
+    }
+
+    /**
+     * Relacionamento com médico
+     */
+    public function medico(): BelongsTo
+    {
+        return $this->belongsTo(Medico::class);
+    }
+
+    /**
+     * Convênio do atendimento (null = particular)
+     */
+    public function convenio(): BelongsTo
+    {
+        return $this->belongsTo(Convenio::class);
     }
 
     /**
@@ -48,6 +68,14 @@ class Agendamento extends Model
     public function graduacoe(): HasOne
     {
         return $this->hasOne(Graduacoe::class);
+    }
+
+    /**
+     * Prontuário do atendimento
+     */
+    public function prontuario(): HasOne
+    {
+        return $this->hasOne(Prontuario::class);
     }
 
     /**
